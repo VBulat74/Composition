@@ -1,4 +1,4 @@
-package ru.com.bulat.composition.data.entity
+package ru.com.bulat.composition.domain.entity
 
 data class Question (
     val sum : Int,

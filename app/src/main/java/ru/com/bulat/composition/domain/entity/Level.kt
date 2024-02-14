@@ -1,4 +1,4 @@
-package ru.com.bulat.composition.data.entity
+package ru.com.bulat.composition.domain.entity
 
 enum class Level{
     TEST, EASY, NORMAL, HARD

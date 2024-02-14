@@ -1,7 +1,7 @@
-package ru.com.bulat.composition.data.usecases
+package ru.com.bulat.composition.domain.usecases
 
-import ru.com.bulat.composition.data.entity.Question
-import ru.com.bulat.composition.data.repository.GameRepository
+import ru.com.bulat.composition.domain.entity.Question
+import ru.com.bulat.composition.domain.repository.GameRepository
 
 class GenerateQuestionUseCase (
     private val repository: GameRepository,
