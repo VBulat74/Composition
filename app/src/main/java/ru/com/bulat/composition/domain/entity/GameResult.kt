@@ -1,10 +1,12 @@
 package ru.com.bulat.composition.domain.entity
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-data class GameResult (
-    val winner : Boolean,
-    val countOfRightAnswers : Int,
-    val countOfQuestions : Int,
-    val gameSettings : GameSettings,
-) : Serializable
+@Parcelize
+data class GameResult(
+    val winner: Boolean,
+    val countOfRightAnswers: Int,
+    val countOfQuestions: Int,
+    val gameSettings: GameSettings,
+) : Parcelable
