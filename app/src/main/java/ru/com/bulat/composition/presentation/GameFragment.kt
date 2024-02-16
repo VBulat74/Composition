@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import ru.com.bulat.composition.R
 import ru.com.bulat.composition.databinding.FragmentGameBinding
 import ru.com.bulat.composition.domain.entity.GameResult
@@ -20,15 +19,22 @@ class GameFragment : Fragment() {
 
     private lateinit var level: Level
 
+    private val viewModelFactory by lazy {
+        GameViewModelFactory(
+            requireActivity().application,
+            level
+        )
+    }
+
     private val viewModel: GameViewModel by lazy {
         ViewModelProvider(
             this,
-            AndroidViewModelFactory.getInstance(requireActivity().application)
+            viewModelFactory,
         ).get(GameViewModel::class.java)
     }
 
     private val tvOptions by lazy {
-        mutableListOf<TextView>().apply{
+        mutableListOf<TextView>().apply {
             add(binding.tvOption1)
             add(binding.tvOption2)
             add(binding.tvOption3)
@@ -61,20 +67,19 @@ class GameFragment : Fragment() {
 
         observerViewModel()
         setClickListenerToOptions()
-        viewModel.startGame(level)
     }
 
-    private fun setClickListenerToOptions(){
-        for (tvOption in tvOptions){
+    private fun setClickListenerToOptions() {
+        for (tvOption in tvOptions) {
             tvOption.setOnClickListener {
                 viewModel.chooseAnswer(tvOption.text.toString().toInt())
             }
         }
     }
 
-    private fun observerViewModel(){
+    private fun observerViewModel() {
         viewModel.question.observe(viewLifecycleOwner) {
-            with(binding){
+            with(binding) {
                 tvSum.text = it.sum.toString()
                 tvLeftNumber.text = it.visibleNumber.toString()
                 for (i in 0 until tvOptions.size) {
@@ -83,29 +88,29 @@ class GameFragment : Fragment() {
             }
         }
 
-        viewModel.percentOfRightAnswers.observe(viewLifecycleOwner){
+        viewModel.percentOfRightAnswers.observe(viewLifecycleOwner) {
             binding.progressBar.setProgress(it, true)
         }
 
-        viewModel.enoughCount.observe(viewLifecycleOwner){
+        viewModel.enoughCount.observe(viewLifecycleOwner) {
             binding.tvAnswersProgress.setTextColor(getColorByState(it))
         }
 
-        viewModel.enoughPercent.observe(viewLifecycleOwner){
+        viewModel.enoughPercent.observe(viewLifecycleOwner) {
             val color = getColorByState(it)
             binding.progressBar.progressTintList = ColorStateList.valueOf(color)
         }
 
-        viewModel.formattedTime.observe(viewLifecycleOwner){
+        viewModel.formattedTime.observe(viewLifecycleOwner) {
             binding.tvTimer.text = it
         }
-        viewModel.minPercent.observe(viewLifecycleOwner){
+        viewModel.minPercent.observe(viewLifecycleOwner) {
             binding.progressBar.secondaryProgress = it
         }
-        viewModel.gameResult.observe(viewLifecycleOwner){
+        viewModel.gameResult.observe(viewLifecycleOwner) {
             launchGameFinishedResult(it)
         }
-        viewModel.progressAnswers.observe(viewLifecycleOwner){
+        viewModel.progressAnswers.observe(viewLifecycleOwner) {
             binding.tvAnswersProgress.setText(it)
         }
     }
