@@ -5,9 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.findNavController
 import ru.com.bulat.composition.R
 import ru.com.bulat.composition.databinding.FragmentGameFinishedBinding
 import ru.com.bulat.composition.domain.entity.GameResult
@@ -42,19 +41,19 @@ class GameFinishedFragment : Fragment() {
     private fun bindViews() {
         with(binding) {
             emojiResult.setImageResource(getSmileResult())
-            tvRequiredAnswers.text= String.format(
+            tvRequiredAnswers.text = String.format(
                 getString(R.string.required_score),
                 gameResult.gameSettings.minCountRightAnswers,
             )
-            tvScoreAnswers.text= String.format(
+            tvScoreAnswers.text = String.format(
                 getString(R.string.score_answers),
                 gameResult.countOfRightAnswers,
             )
-            tvRequiredPercentage.text= String.format(
+            tvRequiredPercentage.text = String.format(
                 getString(R.string.required_percentage),
                 gameResult.gameSettings.minPercentRightAnswers,
             )
-            tvScorePercentage.text= String.format(
+            tvScorePercentage.text = String.format(
                 getString(R.string.score_percentage),
                 getPercentageOfRightAnswers(),
             )
@@ -65,29 +64,19 @@ class GameFinishedFragment : Fragment() {
         if (countOfQuestions == 0) {
             0
         } else {
-            ((countOfRightAnswers / countOfQuestions.toDouble())*100).toInt()
+            ((countOfRightAnswers / countOfQuestions.toDouble()) * 100).toInt()
         }
     }
 
     private fun getSmileResult(): Int {
         return if (gameResult.winner) {
             R.drawable.ic_smile
-        }else {
+        } else {
             R.drawable.ic_sad
         }
     }
 
     private fun setupClickListeners() {
-        val calBack = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                retryGame()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            calBack,
-        )
-
         binding.buttonRetry.setOnClickListener {
             retryGame()
         }
@@ -95,7 +84,8 @@ class GameFinishedFragment : Fragment() {
 
     fun parseArgs() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            gameResult = requireArguments().getParcelable(KEY_RESULT, GameResult::class.java) as GameResult
+            gameResult =
+                requireArguments().getParcelable(KEY_RESULT, GameResult::class.java) as GameResult
         } else {
             @Suppress("DEPRECATION")
             requireArguments().getParcelable<GameResult>(KEY_RESULT)?.let {
@@ -110,13 +100,12 @@ class GameFinishedFragment : Fragment() {
     }
 
     private fun retryGame() {
-        requireActivity().supportFragmentManager
-            .popBackStack(GameFragment.NAME, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        findNavController().popBackStack()
     }
 
     companion object {
 
-        private const val KEY_RESULT = "result"
+        const val KEY_RESULT = "result"
         fun newInstance(gameResult: GameResult): GameFinishedFragment {
             return GameFinishedFragment().apply {
                 arguments = Bundle().apply {
