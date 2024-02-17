@@ -137,7 +137,7 @@ class GameViewModel(
         val minutes = seconds / SECONDS_IN_MINUTE
         val leftSeconds = seconds - (minutes * SECONDS_IN_MINUTE)
 
-        return String.format("%02d%02d", minutes, leftSeconds)
+        return String.format("%02d:%02d", minutes, leftSeconds)
     }
 
     private fun finishGame() {
